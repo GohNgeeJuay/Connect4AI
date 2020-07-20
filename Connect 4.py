@@ -5,7 +5,8 @@
 from IPython.display import display, HTML, clear_output
 import random
 import time
-
+import pygame
+import sys
 
 class Connect4Board:
     def __init__(self,rows=6, columns=7):
@@ -101,8 +102,10 @@ class Connect4Board:
                 if r not in range(0,len(self.board)) or c not in range(0,len(self.board[0])):    #check if within boundary of board. If not stop checking that direction and move on to next direction.
                     found_winner = False
                     break
-                
-                else:
+                 
+                else:    
+                    #print(self.board[r][c])    #for checking
+                    #print(self.board[row][column])
                     if self.board[r][c] != self.board[row][column]:    #check if the current checked cell has same cell as original point
                         found_winner = False
                         break
@@ -131,6 +134,27 @@ class Connect4Board:
 
         except IndexError:
             print("get_winner called with wrong winning position")
+
+
+    
+    def previous_row(self,column):
+        ''' Returns the index of the row which is the highest (last played/last inserted) in a particular column
+        @param      column: index of column in the board
+        @return:    int: index of row. If column has no pieces return False
+        @raises:    Exception: if column outside of boundary of board
+        '''
+        if abs(column) >= len(self.board[0]):
+            raise Exception("Column does not exist in the board. Must be between 0 and " + str(len(self.board[0]-1)))
+        
+        nrows = len(self.board)
+        for i in range(0,nrows,1):
+            if self.board[i][column] == self.piece_one or self.board[i][column] == self.piece_two:
+                return i
+        return False
+
+    def draw_board(self):
+        pass
+
 
 
 # def display_html(s):
@@ -166,11 +190,28 @@ def main():
     board = Connect4Board()
     game_over = False
     turn = 0
-   
+    
+    #reference for GUI: https://www.youtube.com/watch?v=SDz3P_Ctm7U&t=7s
+    pygame.init()    #create the window by specifying dimensions
+    SQUARESIZE = 100
+    COLUMN_COUNT = 7
+    ROW_COUNT = 6
+    
+    width = COLUMN_COUNT * SQUARESIZE
+    height = (ROW_COUNT+1) * SQUARESIZE
+    size = (width,height)
+    screen = pygame.display.set_mode(size)
+
+
     #game loop
     board.print_board()
     while not game_over:
     
+        for event in pygame.event.get():    #allow to quit by clicking exit button
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+
         #Player 1 input
         if turn == 0:
             userInput = input("Which column selected?: ")
@@ -178,19 +219,22 @@ def main():
             try:
                 board.drop_piece(int(userInput),board.piece_one)
                 board.print_board()
-
+                #check_winner = board.has_winner()    #Might change this to check only the last inserted location instead of all the positions in board
                 
-                check_winner = board.has_winner()
+                prevRow = board.previous_row(int(userInput))
+                check_winner = board.check_piece(prevRow,int(userInput))
+                
                 if check_winner != False: #if current turn results in winning state, end. else continue
                     game_over = True
                     
-                    #Get the winner at position check_winner[0],check_winner[1]
-                    player_winner = board.get_winner(check_winner[0],check_winner[1])
+                    # #Get the winner at position check_winner[0],check_winner[1]
+                    # player_winner = board.get_winner(check_winner[0],check_winner[1])
                 
-                    print("Game Over. The winner is: " + player_winner)
-                    #Might just leave it as player1, since anyway player2 makes a winning move this round, otherwise would have detected player1 before or earlier
-                    #print("Game Over. The winner is: Player 1"))
-
+                    # print("Game Over. The winner is: " + player_winner)
+                    
+                    #Leave it as player1, since anyway player2 makes a winning move this round, otherwise would have detected player1 before or earlier
+                    print("Game Over. The winner is: Player 1")
+                    
                 else:
                     turn = 1
 
@@ -212,15 +256,19 @@ def main():
                 board.drop_piece(int(userInput),board.piece_two)
                 board.print_board()
 
-                check_winner = board.has_winner()
+                #check_winner = board.has_winner()    #Might change this to check only the last inserted location instead of all the positions in board
+
+                prevRow = board.previous_row(int(userInput))
+                check_winner = board.check_piece(prevRow,int(userInput))
+
                 if check_winner != False: #if current turn results in winning state, end. else continue
                     game_over = True
                     #Get the winner at position check_winner[0],check_winner[1]
-                    player_winner = board.get_winner(check_winner[0],check_winner[1])
+                    #player_winner = board.get_winner(check_winner[0],check_winner[1])
 
-                    print("Game Over. The winner is: " + player_winner)    
-                    #Might just leave it as player2, since anyway player2 makes a winning move this round, otherwise would have detected player1 before or earlier
-                    #print("Game Over. The winner is: Player 2"))
+                    #print("Game Over. The winner is: " + player_winner)    
+                    #Leave it as player2, since anyway player2 makes a winning move this round, otherwise would have detected player1 before or earlier
+                    print("Game Over. The winner is: Player 2")
 
                 else:
                     turn = 0
@@ -242,6 +290,15 @@ if __name__ == '__main__':
     main()
         
         
+# board = Connect4Board()
+# print(board.board)
+# board.drop_piece(1,board.piece_one)
+# print(board.board)
+# print(board.board[0][1] == board.piece_one)
+# print(type(board.piece_one))
+# print(board.piece_one)
+# print(board.board[5][1])
+
         
 
     
