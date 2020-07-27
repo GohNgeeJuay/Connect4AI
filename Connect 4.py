@@ -6,6 +6,7 @@ import time
 import pygame
 import sys
 import math
+from AI import Connect4AI
 
 class Connect4Board:
     def __init__(self,rows=6, columns=7):
@@ -174,10 +175,6 @@ class Connect4Board:
                     pygame.draw.circle(self.screen,  (255,255,0), (int(c*self.SQUARESIZE + self.SQUARESIZE/2), int(r*self.SQUARESIZE + self.SQUARESIZE + self.SQUARESIZE/2)), int(self.SQUARESIZE/2 - 5))
         pygame.display.update() #update to show changes
 
-    
-    
-
-
 
 
 def main():
@@ -258,48 +255,51 @@ def main():
                         continue
 
                     
-                #Player 2 input
-                elif turn == 1:
-                    posx = event.pos[0]    #access the x position of tuple
-                    userInput = int(math.floor(posx/board.SQUARESIZE))    #first column = 0 to 100, sec col = 100 to 200, etc. 
-                    #userInput = input("Which column selected?: ")
-                    
-                    try:
-                        board.drop_piece(int(userInput),board.piece_two)
-                        board.print_board()
-                        board.draw_board()
+            #AI input
+            if turn == 1:
+                               
+                #AI input
+                boardAI = Connect4AI(board.board) #Pass in the board array to the AI to create the graph. 
+                                
+                #userInput = int(math.floor(posx/board.SQUARESIZE))    #first column = 0 to 100, sec col = 100 to 200, etc. GUI user input
+                #userInput = input("Which column selected?: ")    #Manual input in console
+                
+                try:
+                    board.drop_piece(int(userInput),board.piece_two)
+                    board.print_board()
+                    board.draw_board()
 
-                        #check_winner = board.has_winner()    #Might change this to check only the last inserted location instead of all the positions in board
+                    #check_winner = board.has_winner()    #Might change this to check only the last inserted location instead of all the positions in board
 
-                        prevRow = board.previous_row(int(userInput))
-                        check_winner = board.check_piece(prevRow,int(userInput))
+                    prevRow = board.previous_row(int(userInput))
+                    check_winner = board.check_piece(prevRow,int(userInput))
 
-                        if check_winner != False: #if current turn results in winning state, end. else continue
-                            game_over = True
-                            #Get the winner at position check_winner[0],check_winner[1]
-                            #player_winner = board.get_winner(check_winner[0],check_winner[1])
+                    if check_winner != False: #if current turn results in winning state, end. else continue
+                        game_over = True
+                        #Get the winner at position check_winner[0],check_winner[1]
+                        #player_winner = board.get_winner(check_winner[0],check_winner[1])
 
-                            #print("Game Over. The winner is: " + player_winner)    
-                            #Leave it as player2, since anyway player2 makes a winning move this round, otherwise would have detected player1 before or earlier
-                            print("Game Over. The winner is: Player 2")
+                        #print("Game Over. The winner is: " + player_winner)    
+                        #Leave it as player2, since anyway player2 makes a winning move this round, otherwise would have detected player1 before or earlier
+                        print("Game Over. The winner is: Player 2")
 
-                            label = myfont.render("Player 2 Wins!",1, (255,255,0))    #show on screen
-                            board.screen.blit(label, (40,10))
-                            pygame.display.update() #update to show changes
-                            pygame.time.wait(3000) #give 3 seconds before automatic close window
+                        label = myfont.render("Player 2 Wins!",1, (255,255,0))    #show on screen
+                        board.screen.blit(label, (40,10))
+                        pygame.display.update() #update to show changes
+                        pygame.time.wait(3000) #give 3 seconds before automatic close window
 
-                        else:
-                            turn = 0
-                    
-                    except IndexError:
-                        print("Try Again")
-                        board.print_board()
-                        continue
+                    else:
+                        turn = 0
+                
+                except IndexError:
+                    print("Try Again")
+                    board.print_board()
+                    continue
 
-                    except Exception:    #If didn't insert correctly
-                        print("Try Again")
-                        board.print_board()
-                        continue
+                except Exception:    #If didn't insert correctly
+                    print("Try Again")
+                    board.print_board()
+                    continue
 
             
 
