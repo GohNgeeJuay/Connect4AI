@@ -2,8 +2,6 @@
 #https://www3.nd.edu/~pbui/teaching/cdt.30010.fa16/project01.html
 
 
-from IPython.display import display, HTML, clear_output
-import random
 import time
 import pygame
 import sys
@@ -23,6 +21,7 @@ class Connect4Board:
         self.ncolumns = columns
         self.piece_one  = 'x'
         self.piece_two  = 'o'
+
         self.SQUARESIZE = 100    #parameters for the board
         self.COLUMN_COUNT = self.ncolumns
         self.ROW_COUNT = self.nrows
@@ -133,7 +132,7 @@ class Connect4Board:
             if self.board[row][column] == "x":
                 return "Player 1"
             elif self.board[row][column] == "o":
-                return "Player 1"
+                return "Player 2"
             else:
                 raise Exception("Position at " + str(row) + "," + str(column) + " is empty." )
 
@@ -158,6 +157,11 @@ class Connect4Board:
         return False
 
     def draw_board(self):
+        ''' Create a user interface of the connect 4 board
+        @param      None
+        @return:    None
+        @raises:    None
+        '''
         for c in range(self.ncolumns):
             for r in range(self.nrows):
                 pygame.draw.rect(self.screen, (0,0,255), (c*self.SQUARESIZE, r*self.SQUARESIZE + self.SQUARESIZE, self.SQUARESIZE, self.SQUARESIZE))    #draw rectangle
@@ -169,6 +173,12 @@ class Connect4Board:
                 else:    #if contains player 2 input, draw yellow circle
                     pygame.draw.circle(self.screen,  (255,255,0), (int(c*self.SQUARESIZE + self.SQUARESIZE/2), int(r*self.SQUARESIZE + self.SQUARESIZE + self.SQUARESIZE/2)), int(self.SQUARESIZE/2 - 5))
         pygame.display.update() #update to show changes
+
+    
+    
+
+
+
 
 def main():
     board = Connect4Board(6,7)
@@ -296,18 +306,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-        
-        
-# board = Connect4Board()
-# print(board.board)
-# board.drop_piece(1,board.piece_one)
-# print(board.board)
-# print(board.board[0][1] == board.piece_one)
-# print(type(board.piece_one))
-# print(board.piece_one)
-# print(board.board[5][1])
 
-        
 
     
 
