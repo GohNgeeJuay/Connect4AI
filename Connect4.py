@@ -6,7 +6,7 @@ import time
 import pygame
 import sys
 import math
-from AI import Connect4AI
+
 
 class Connect4Board:
     def __init__(self,rows=6, columns=7):
