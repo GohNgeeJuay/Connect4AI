@@ -9,6 +9,7 @@ class Node():
         self.child = [None] * numOfChild
         self.arrayCounter = 0
         self.arraySize = numOfChild
+        self.isLeaf = False    #Attribute to terminate growing
 
     def add_child(self, data):
         if self.arrayCounter >= self.arraySize:

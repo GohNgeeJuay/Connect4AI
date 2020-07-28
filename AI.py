@@ -14,14 +14,19 @@ class Connect4AI():
         self.grow_width(self.tree.root, Connect4Object.piece_two)       #grow the tree
 
 
-        for i in self.tree.root.child:    #Second round growing for Human Player
-            self.grow_width(i, Connect4Object.piece_one)
+        for i in range(len(self.tree.root.child)):    #Second round growing for Human Player
+            self.grow_width(self.tree.root.child[i], Connect4Object.piece_one)
+
+            #Third round growing for AI
+            for j in range(len(self.tree.root.child[i].child)):
+                self.grow_width(self.tree.root.child[i].child[j],Connect4Object.piece_two)
         
         
         
         
-    def grow_width(self, currentNode, piece):    
-        
+    def grow_width(self, currentNode, piece, n_seq = 4):    
+        if currentNode.isLeaf == True:
+            return
                  
         #insert into individual columns
         for c in range(0,len(currentNode.data[0]),1):
@@ -44,8 +49,45 @@ class Connect4AI():
                 
                 copyBoard = copy.deepcopy(currentNode.data) #create copy of the board
                 copyBoard[r][c] = piece  #add the new piece for AI
-
                 currentNode.add_child(Node(copyBoard))    #create a new node for the child with new board as data
+
+                #check if this newly added step produces a winning condition
+                DIRECTIONS = (
+                (-1, -1), (-1, 0), (-1, 1),
+                ( 0, -1),          ( 0, 1),
+                ( 1, -1), ( 1, 0), ( 1, 1),
+                )
+        
+                newChildIndex = currentNode.get_previous_added_child()
+                newChildBoard = currentNode.child[newChildIndex].data
+
+                for dr, dc in DIRECTIONS:
+                    found_winner = True
+                    
+                    for i in range(1,n_seq):
+                        checkR = r + dr*i
+                        checkC = c + dc*i
+                    
+                        
+                        if checkR not in range(0,len(newChildBoard)) or checkC not in range(0,len(newChildBoard[0])):    #check if within boundary of board. If not stop checking that direction and move on to next direction.
+                            found_winner = False
+                            break
+                        
+                        else:    
+                            
+                            if newChildBoard[checkR][checkC] != newChildBoard[r][c]:    #check if the current checked cell has same cell as original point
+                                found_winner = False
+                                break
+                        
+                    
+                    if found_winner == True:
+                        break
+                
+                if found_winner == True:
+                    currentNode.child[newChildIndex].isLeaf = True
+                
+                
+
 
                 
 
