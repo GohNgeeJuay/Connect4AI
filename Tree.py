@@ -24,13 +24,3 @@ class Node():
         else: 
             return self.arrayCounter - 1
 
-
-
-
-
-# x = Tree(1)
-# print(x.root.data)
-# x.root.add_child(2)
-# print(x.root.child)
-# x.root.add_child(3)
-# print(x.root.child)

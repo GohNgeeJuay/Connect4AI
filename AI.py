@@ -19,9 +19,10 @@ class Connect4AI():
 
             #Third round growing for AI
             for j in range(len(self.tree.root.child[i].child)):
-                self.grow_width(self.tree.root.child[i].child[j],Connect4Object.piece_two)
-        
-        
+                if self.tree.root.child[i].child[j] != None:    #if there is a child, then grow
+                    self.grow_width(self.tree.root.child[i].child[j],Connect4Object.piece_two)
+                    break
+       
         
         
     def grow_width(self, currentNode, piece, n_seq = 4):    
@@ -30,7 +31,7 @@ class Connect4AI():
                  
         #insert into individual columns
         for c in range(0,len(currentNode.data[0]),1):
-                
+
             r = 0    #Get the previous row used.
             while r < len(currentNode.data):
                 if currentNode.data[r][c] == 'x' or currentNode.data[r][c] == 'o':
@@ -93,36 +94,23 @@ class Connect4AI():
 
 
 
-    #winning_pos = self.board.check_piece(r,0)    #stop if the current 
-    # if winning_pos != False:    
-    #     return
-    #prevChildIndex = currentNode.get_previous_added_child()    #change the currentNode to child for recursion
-    #currentNode = currentNode.child[prevChildIndex]
+   
 
-    # depth += 1
-    # if depth >= self.depth:
-    #     return
-    # else:
-    #     self.grow(currentNode, depth, length + 1)
-
-    # #Minimax function reference: https://www.youtube.com/watch?v=l-hh51ncgDI&list=WL&index=32&t=0s
-    # def minimax(position, depth, alpha, beta, maximisingPlayer):
-    #     if depth = 0 or game over in position:
+# #Minimax function reference: https://www.youtube.com/watch?v=l-hh51ncgDI&list=WL&index=32&t=0s    
+# Need to implement in a new function. 
+# Come up with the heuristics function first, then general min max function.
+# Have not utilise the depth in __init__. Only goes through max depth = 3. Have to add some proper function calls based on depth argument
 
 board = Connect4Board()
 
-board.drop_piece(0,'o')
 board.drop_piece(0,'x')
+board.drop_piece(1,'o')
+board.drop_piece(2,'x')
+board.drop_piece(1,'o')
+board.drop_piece(0,'x')
+board.drop_piece(1,'o')
+board.drop_piece(2,'x')
 
-x = Connect4AI(board, lastPiece= (4,0))
 
+x = Connect4AI(board, lastPiece= (2,1))
 
-
-
-# x = [['x',' ',' ',' ',' ',' ',' '],[' ',' ',' ',' ',' ',' ',' '],[' ',' ',' ',' ',' ',' ',' '],[' ',' ',' ',' ',' ',' ',' '],[' ',' ',' ',' ',' ',' ',' ']
-# ,[' ',' ',' ',' ',' ',' ',' '],[' ',' ',' ',' ',' ',' ',' ']]
-
-# y = copy.deepcopy(x)
-# print(y)
-# y[0][1] = 'o'
-# print(y)
