@@ -68,7 +68,7 @@ class Connect4Board:
             print('Not a valid column. Valid columns: 0 to ' + str(self.ncolumns-1))
 
 
-    def has_winner(self,n_seq = 4): 
+    def has_winner(self,piece, n_seq = 4,): 
         ''' Returns the position of first winning sequence encountered or False if none encountered in board
         @param      board: The Connect 4 board instance
         @param      n_seq: Number of pieces for winning sequence. Default = 4
@@ -78,7 +78,7 @@ class Connect4Board:
         found = False
         for row in range(self.nrows):
             for col in range(self.ncolumns):
-                if (self.board[row][col] == self.piece_one) or (self.board[row][col] == self.piece_two):
+                if self.board[row][col] == piece:
                     
                     retVal = self.check_piece(row,col,n_seq)
                     if retVal != False:
@@ -229,10 +229,10 @@ def main():
                         #check_winner = board.has_winner()    #Might change this to check only the last inserted location instead of all the positions in board
                         
                         #prevRow = board.previous_row(int(userInput))
-                        check_winner = board.has_winner()      #Need to check all possible locations. Cannot check just starting from the last inserted position
+                        check_winner = board.has_winner(piece= board.piece_two)      #Need to check all possible locations. Cannot check just starting from the last inserted position
                         #check_winner = board.check_piece(prevRow,int(userInput))
                         
-                        if check_winner != False: #if current turn results in winning state, end. else continue
+                        if check_winner == True: #if current turn results in winning state, end. else continue
                             game_over = True
                             
                             # #Get the winner at position check_winner[0],check_winner[1]
@@ -280,10 +280,10 @@ def main():
                     #check_winner = board.has_winner()    #Might change this to check only the last inserted location instead of all the positions in board
 
                     #prevRow = board.previous_row(int(userInput))
-                    check_winner = board.has_winner()      #Need to check all possible locations. Cannot check just starting from the last inserted position
+                    check_winner = board.has_winner(piece = board.piece_two)      #Need to check all possible locations. Cannot check just starting from the last inserted position
                     #check_winner = board.check_piece(prevRow,int(userInput))
 
-                    if check_winner != False: #if current turn results in winning state, end. else continue
+                    if check_winner == True: #if current turn results in winning state, end. else continue
                         game_over = True
                         #Get the winner at position check_winner[0],check_winner[1]
                         #player_winner = board.get_winner(check_winner[0],check_winner[1])
