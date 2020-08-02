@@ -1,4 +1,5 @@
 #from Connect4 import Connect4Board
+import numpy
 
 class Tree():
     def __init__(self,data):
@@ -114,10 +115,9 @@ class Node():
     #Heuristics reference: https://www.youtube.com/watch?v=MMLtza3CZFM&list=WL&index=34&t=441s
     def scoring(self,lastPiece,n_seq=4):
         #horizontal
-        #score = 0
         for r in range(len(self.data)):    #Need to move a window from left to right of every row
             row_array = self.data[r].copy()
-            for c in range(len(row_array)-3):    #-3 for window size of 4 in 7 column board
+            for c in range(len(row_array)-n_seq+1):    #-3 for window size of 4 in 7 column board
                 window = row_array[c:c+n_seq]
 
                 if window.count(self.data[lastPiece[0]][lastPiece[1]]) == 4:
@@ -128,6 +128,56 @@ class Node():
 
                 elif window.count(self.data[lastPiece[0]][lastPiece[1]]) == 2 and window.count(' ') == 2:
                     self.value += 5
+
+        #vertical
+        for c in range(len(self.data[0])):
+            
+            col_array = []    #create the col_array manually
+            for r in range(len(self.data)):
+                col_array.append(self.data[r][c])
+
+            for r in range(len(col_array)-n_seq+1):
+                window = col_array[r:r+n_seq]
+
+                if window.count(self.data[lastPiece[0]][lastPiece[1]]) == 4:
+                    self.value += 100
+
+                elif window.count(self.data[lastPiece[0]][lastPiece[1]]) == 3 and window.count(' ') == 1:
+                    self.value += 10            
+
+                elif window.count(self.data[lastPiece[0]][lastPiece[1]]) == 2 and window.count(' ') == 2:
+                    self.value += 5
+
+               
+        #downwards slope
+        for r in range(len(self.data)-n_seq+1):
+            for c in range(len(self.data[0])-n_seq+1):
+                window = [self.data[r+i][c+i] for i in range(n_seq)]
+               
+                if window.count(self.data[lastPiece[0]][lastPiece[1]]) == 4:
+                    self.value += 100
+
+                elif window.count(self.data[lastPiece[0]][lastPiece[1]]) == 3 and window.count(' ') == 1:
+                    self.value += 10            
+
+                elif window.count(self.data[lastPiece[0]][lastPiece[1]]) == 2 and window.count(' ') == 2:
+                    self.value += 5
+
+        #upwards slope
+        for r in range(len(self.data)-1,n_seq-2,-1):
+            for c in range(len(self.data[0])-n_seq,-1,-1):
+                window = [self.data[r-i][c+i] for i in range(n_seq)]
+                    
+                if window.count(self.data[lastPiece[0]][lastPiece[1]]) == 4:
+                    self.value += 100
+
+                elif window.count(self.data[lastPiece[0]][lastPiece[1]]) == 3 and window.count(' ') == 1:
+                    self.value += 10            
+
+                elif window.count(self.data[lastPiece[0]][lastPiece[1]]) == 2 and window.count(' ') == 2:
+                    self.value += 5
+
+
 
                 
 

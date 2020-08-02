@@ -229,7 +229,7 @@ def main():
                         #check_winner = board.has_winner()    #Might change this to check only the last inserted location instead of all the positions in board
                         
                         #prevRow = board.previous_row(int(userInput))
-                        check_winner = board.has_winner(piece= board.piece_two)      #Need to check all possible locations. Cannot check just starting from the last inserted position
+                        check_winner = board.has_winner(piece= board.piece_one)      #Need to check all possible locations. Cannot check just starting from the last inserted position
                         #check_winner = board.check_piece(prevRow,int(userInput))
                         
                         if check_winner == True: #if current turn results in winning state, end. else continue
