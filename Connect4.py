@@ -6,6 +6,7 @@ import time
 import pygame
 import sys
 import math
+from AI import *
 
 
 class Connect4Board:
@@ -156,6 +157,7 @@ class Connect4Board:
             if self.board[i][column] == self.piece_one or self.board[i][column] == self.piece_two:
                 return i
         return False
+        
 
     def draw_board(self):
         ''' Create a user interface of the connect 4 board
@@ -259,8 +261,9 @@ def main():
             if turn == 1:
                                
                 #AI input
-                boardAI = Connect4AI(board.board) #Pass in the board array to the AI to create the graph. 
-                                
+                boardAI = Connect4AI(board) #Pass in the board to the AI to create the tree. 
+                userInput = boardAI.pick_best_move()
+
                 #userInput = int(math.floor(posx/board.SQUARESIZE))    #first column = 0 to 100, sec col = 100 to 200, etc. GUI user input
                 #userInput = input("Which column selected?: ")    #Manual input in console
                 
@@ -272,6 +275,8 @@ def main():
                     #check_winner = board.has_winner()    #Might change this to check only the last inserted location instead of all the positions in board
 
                     prevRow = board.previous_row(int(userInput))
+                    if prevRow == False:
+                        print("Problem here")
                     check_winner = board.check_piece(prevRow,int(userInput))
 
                     if check_winner != False: #if current turn results in winning state, end. else continue

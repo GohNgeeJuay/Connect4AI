@@ -1,5 +1,6 @@
 import copy
 
+import random
 from Connect4 import *
 from Tree import *
 
@@ -15,16 +16,21 @@ class Connect4AI():
         '''
         self.tree = Tree(Connect4Object.board)     #Put the array representation of board into the tree instead of the Connect4 object
         self.grow_width(self.tree.root, Connect4Object.piece_two)       #grow the tree
+        #Temporarily. Choose from the next best 7 positions
+        
 
+        # for i in range(len(self.tree.root.child)):    #Second round growing for Human Player
+        #     self.grow_width(self.tree.root.child[i], Connect4Object.piece_one)
 
-        for i in range(len(self.tree.root.child)):    #Second round growing for Human Player
-            self.grow_width(self.tree.root.child[i], Connect4Object.piece_one)
-
-            #Third round growing for AI
-            for j in range(len(self.tree.root.child[i].child)):
-                if self.tree.root.child[i].child[j] != None:    #if there is a child, then grow
-                    self.grow_width(self.tree.root.child[i].child[j],Connect4Object.piece_two)
-                    break
+        #     if self.tree.root.child[i] == None:
+        #         print("No Child")
+        #         continue
+            
+        #     #Third round growing for AI
+        #     for j in range(len(self.tree.root.child[i].child)):
+        #         if self.tree.root.child[i].child[j] != None:    #if there is a child, then grow
+        #             self.grow_width(self.tree.root.child[i].child[j],Connect4Object.piece_two)
+        #             break
        
         
         
@@ -36,14 +42,17 @@ class Connect4AI():
         3) Check if the new node is a leaf(terminal node) based on winning condition, if True, change the attribute isLeaf for that node
         4) Give a score to the new node
         
-
-        Variables: self.tree: Contains the tree structure of the possible decisions to make.
-        @param:     Connect4Object
+        @param:     currentNode. current node for which its children will be expanded upon.
+        @param:     piece. Piece to be added in the board
+        @param:     n_seq. The winning condition for connect sequence. Default = 4.
         @return:    None
         @raises:    None
 
         '''
 
+        if currentNode is None:
+            return
+            
         if currentNode.isLeaf == True:    #if node is a terminal node, do not grow it further
             return
                  
@@ -68,7 +77,9 @@ class Connect4AI():
                 
                 copyBoard = copy.deepcopy(currentNode.data) #create copy of the board
                 copyBoard[r][c] = piece  #add the new piece for AI
-                currentNode.add_child(Node(copyBoard))    #create a new node for the child with new board as data
+                
+                currentNode.add_child(Node(copyBoard),c)
+                #currentNode.add_child(Node(copyBoard))    #create a new node for the child with new board as data
 
                 #check if this newly added step produces a winning condition. Change the attribute isLeaf
                 DIRECTIONS = (
@@ -77,7 +88,8 @@ class Connect4AI():
                 ( 1, -1), ( 1, 0), ( 1, 1),
                 )
         
-                newChildIndex = currentNode.get_previous_added_child()
+                #newChildIndex = currentNode.get_previous_added_child()
+                newChildIndex = c
                 newChildBoard = currentNode.child[newChildIndex].data
 
                 for dr, dc in DIRECTIONS:
@@ -106,9 +118,28 @@ class Connect4AI():
                     currentNode.child[newChildIndex].isLeaf = True
 
                 #give a score to the board
-                currentNode.scoring((r,c))    #Pass in the recently added position into the function for evaluation
+                currentNode.child[newChildIndex].scoring((r,c))    #Pass in the recently added position into the function for evaluation
                 
     
+    #Temporarily. Choose from the next best 7 positions
+    def pick_best_move(self):
+        
+        #initialize best_col to a random column
+        best_col = random.randint(0,6)
+        while self.tree.root.child[best_col] == None:
+            best_col = random.randint(0,6)    #Make sure the random chosen column valid
+
+        best_score = 0
+        for child in range(len(self.tree.root.child)):
+
+            if self.tree.root.child[child] == None:
+                continue
+
+            if self.tree.root.child[child].value > best_score:
+                best_col = child
+                best_score = self.tree.root.child[child].value
+        
+        return best_col
 
 
 
@@ -118,16 +149,4 @@ class Connect4AI():
 # Come up with the heuristics function first, then general min max function.
 # Have not utilise the depth in __init__. Only goes through max depth = 3. Have to add some proper function calls based on depth argument
 
-board = Connect4Board()
-
-board.drop_piece(0,'x')
-board.drop_piece(1,'o')
-board.drop_piece(2,'x')
-board.drop_piece(1,'o')
-board.drop_piece(0,'x')
-board.drop_piece(1,'o')
-board.drop_piece(2,'x')
-
-
-x = Connect4AI(board)
 
