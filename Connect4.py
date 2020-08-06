@@ -6,6 +6,7 @@ import time
 import pygame
 import sys
 import math
+import random
 from AI import *
 
 
@@ -186,8 +187,7 @@ class Connect4Board:
 def main():
     board = Connect4Board(6,7)
     game_over = False
-    turn = 0
-    
+   
     #reference for GUI: https://www.youtube.com/watch?v=SDz3P_Ctm7U&t=7s
     pygame.init()            
     board.draw_board()    #draw the empty board based on the instance dimension
@@ -197,7 +197,11 @@ def main():
     #game loop
     board.print_board()
 
+    #turn = random.randint(0,1)
+    turn = 0
     while not game_over:
+
+        
     
         for event in pygame.event.get():    #allow to quit by clicking exit button
             if event.type == pygame.QUIT:    
@@ -267,8 +271,10 @@ def main():
                                
                 #AI input
                 boardAI = Connect4AI(board) #Pass in the board to the AI to create the tree. 
-                userInput = boardAI.pick_best_move()
-
+                #userInput = boardAI.pick_best_move()
+                #minimax algorithm
+                userInput,value = boardAI.minimax(boardAI.tree.root,2,True)
+                
                 #userInput = int(math.floor(posx/board.SQUARESIZE))    #first column = 0 to 100, sec col = 100 to 200, etc. GUI user input
                 #userInput = input("Which column selected?: ")    #Manual input in console
                 

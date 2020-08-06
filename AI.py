@@ -19,18 +19,18 @@ class Connect4AI():
         #Temporarily. Choose from the next best 7 positions
         
 
-        # for i in range(len(self.tree.root.child)):    #Second round growing for Human Player
-        #     self.grow_width(self.tree.root.child[i], Connect4Object.piece_one)
+        for i in range(len(self.tree.root.child)):    #Second round growing for Human Player
+            self.grow_width(self.tree.root.child[i], Connect4Object.piece_one)
 
-        #     if self.tree.root.child[i] == None:
-        #         print("No Child")
-        #         continue
+            if self.tree.root.child[i] == None:
+                print("No Child")
+                continue
             
-        #     #Third round growing for AI
-        #     for j in range(len(self.tree.root.child[i].child)):
-        #         if self.tree.root.child[i].child[j] != None:    #if there is a child, then grow
-        #             self.grow_width(self.tree.root.child[i].child[j],Connect4Object.piece_two)
-        #             break
+            #Third round growing for AI
+            for j in range(len(self.tree.root.child[i].child)):
+                if self.tree.root.child[i].child[j] != None:    #if there is a child, then grow
+                    self.grow_width(self.tree.root.child[i].child[j],Connect4Object.piece_two)
+                    break
        
         
         
@@ -88,10 +88,17 @@ class Connect4AI():
                 ( 1, -1), ( 1, 0), ( 1, 1),
                 )
         
-                #newChildIndex = currentNode.get_previous_added_child()
-                newChildIndex = c
-                newChildBoard = currentNode.child[newChildIndex].data
+                c = c
+                newChildBoard = currentNode.child[c].data
 
+                #If there is no possible moves, the node is a leaf
+                #check the topmost row if there are any empty spots left
+                boardIsFull = False
+                for i in range(len(newChildBoard)):
+                    if newChildBoard[0][i] != ' ':
+                        boardIsFull = True
+                currentNode.child[c].isLeaf = boardIsFull
+                
                 for dr, dc in DIRECTIONS:
                     found_winner = True
                     
@@ -115,10 +122,12 @@ class Connect4AI():
                         break
                 
                 if found_winner == True:
-                    currentNode.child[newChildIndex].isLeaf = True
+                    currentNode.child[c].isLeaf = True
+
+                
 
                 #give a score to the board
-                currentNode.child[newChildIndex].scoring((r,c))    #Pass in the recently added position into the function for evaluation
+                currentNode.child[c].scoring((r,c))    #Pass in the recently added position into the function for evaluation
                 
     
     #Temporarily. Choose from the next best 7 positions
@@ -129,7 +138,7 @@ class Connect4AI():
         while self.tree.root.child[best_col] == None:
             best_col = random.randint(0,6)    #Make sure the random chosen column valid
 
-        best_score = 0
+        best_score = -10000000
         for child in range(len(self.tree.root.child)):
 
             if self.tree.root.child[child] == None:
@@ -140,6 +149,52 @@ class Connect4AI():
                 best_score = self.tree.root.child[child].value
         
         return best_col
+
+    def minimax(self, currentNode, depth, maximisingPlayer):
+        if depth == 0 or currentNode.isLeaf:
+            return (None,currentNode.value)
+        
+        if maximisingPlayer == True:
+            value = -math.inf
+            
+            #initialize best_col to a random column
+            best_col = random.randint(0,6)
+            while currentNode.child[best_col] == None:
+                best_col = random.randint(0,6)    #Make sure the random chosen column valid
+
+            #iterate through child to find max value
+            for i in range(len(currentNode.child)):
+                if currentNode.child[i] == None:    #If there is no child for that index
+                    continue
+                else:    #if there is child
+                    newVal = self.minimax(currentNode.child[i], depth-1, False)[1]
+                    if  newVal > value:
+                        value = newVal
+                        bestCol = i
+            return (bestCol, value)
+
+        if maximisingPlayer == False:
+            value = math.inf
+            
+            #initialize best_col to a random column
+            best_col = random.randint(0,6)
+            while currentNode.child[best_col] == None:
+                best_col = random.randint(0,6)    #Make sure the random chosen column valid
+
+            #iterate through child to find min value
+            for i in range(len(currentNode.child)):
+                if currentNode.child[i] == None:    #If there is no child for that index
+                    continue
+                else:    #if there is child
+                    newVal = self.minimax(currentNode.child[i], depth-1, True)[1]
+                    if newVal < value:
+                        value = newVal
+                        bestCol = i
+            return (bestCol, value)
+        
+        
+
+                     
 
 
 
