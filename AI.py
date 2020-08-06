@@ -95,10 +95,10 @@ class Connect4AI():
                 #check the topmost row if there are any empty spots left
                 boardIsFull = False
                 for i in range(len(newChildBoard)):
-                    if newChildBoard[0][i] != ' ':
+                    if newChildBoard[0][i] == ' ':
                         boardIsFull = True
                 currentNode.child[c].isLeaf = boardIsFull
-                
+
                 for dr, dc in DIRECTIONS:
                     found_winner = True
                     
@@ -121,7 +121,7 @@ class Connect4AI():
                     if found_winner == True:
                         break
                 
-                if found_winner == True:
+                if found_winner == True or boardIsFull == True:
                     currentNode.child[c].isLeaf = True
 
                 

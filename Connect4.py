@@ -271,9 +271,12 @@ def main():
                                
                 #AI input
                 boardAI = Connect4AI(board) #Pass in the board to the AI to create the tree. 
+                
+                #check next best location
                 #userInput = boardAI.pick_best_move()
+
                 #minimax algorithm
-                userInput,value = boardAI.minimax(boardAI.tree.root,2,True)
+                userInput,value = boardAI.minimax(boardAI.tree.root,3,True)
                 
                 #userInput = int(math.floor(posx/board.SQUARESIZE))    #first column = 0 to 100, sec col = 100 to 200, etc. GUI user input
                 #userInput = input("Which column selected?: ")    #Manual input in console

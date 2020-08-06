@@ -79,6 +79,9 @@ class Node():
         
         if window.count(opp_piece) == 3 and window.count(' ') ==1:
             self.value -= 80
+        
+        if window.count(opp_piece) == 2 and window.count(' ') ==2:
+            self.value -= 10
 
 
     #Heuristics reference: https://www.youtube.com/watch?v=MMLtza3CZFM&list=WL&index=34&t=441s
